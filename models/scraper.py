@@ -37,6 +37,7 @@ class Scraper(Thread):
 				# convert numeric strings to float and create dict
 				table_values = [ float(val) for val in parsed_values ][0:9]
 				params = dict(zip(table_keys, table_values))
+				params["date_scraped"] = date.today().strftime("%m/%d/%Y")
 
 				return params
 
