@@ -12,9 +12,8 @@ def home() -> dict:
     return {"message": "Hello World"}
 
 @app.post("/symbol/", response_model=Symbol)
-def get_symbol_data():
-
-	return
+def get_symbol(symbol_name: str) -> Symbol:
+	return Symbol(symbol_name)
 
 if __name__ == "__main__":
     pass
