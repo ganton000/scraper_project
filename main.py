@@ -1,26 +1,23 @@
-
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse, PlainTextResponse
+import uvicorn
 
-from models.symbol import Symbol
+from routes import stocks
 
 app = FastAPI()
 
-symbols = {
-     "apple": { "stock": "AAPL", "name": "Apple", "price": 100 },
-     "microsoft": { "stock": "MSFT", "name": "Microsoft", "price": 90 }
-}
 
-@app.get("/", response_class=JSONResponse)
+app.include_router(stocks.router)
+
+
+@app.get("/")
 def home() -> dict:
-    return {"message": "Hello World"}
+    return {"message": "Hello Rosa"}
 
-@app.get("/symbol/{symbol_name}", response_model=dict)
-def get_symbol(symbol_name: str) -> dict:
-	return symbols.get(symbol_name, {"message": "Symbol not found!"})
 
 
 if __name__ == "__main__":
     pass
+    #uvicorn.run(app, host="localhost", port=8000)
 
 
