@@ -1,14 +1,14 @@
-import { createRoot } from 'react-dom/client';
+import React from "react";
 
-import App from './App';
+import Stocks from "./components/Stocks";
 
-import './index.css';
+const App = () => {
 
-const container = document.getElementById('root');
-const root = createRoot(container);
+    return (
+		<div>
+			<Stocks />
+		</div>
+	);
+};
 
-root.render(
-	<div>
-		<App />
-	</div>
-);
+export default App;
