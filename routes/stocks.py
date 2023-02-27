@@ -10,6 +10,12 @@ from workers.GoogleWorker import GoogleFinanceWorker
 ## stub data
 symbols = ["AAPL", "TSLA", "MSFT"]
 
+stub_data = []
+
+async def create_stub_data():
+	for symbol_name in symbols:
+		stub_data.append(await create_symbol(symbol_name))
+	return stub_data
 
 async def create_symbol(symbol_name: str) -> Symbol:
 	worker = GoogleFinanceWorker(symbol_name)
@@ -26,5 +32,12 @@ async def get_symbol(symbol_name: str) -> Symbol:
 
 @router.get("/symbols/", response_model=List[Symbol])
 async def get_symbols():
-     response = [ await create_symbol(symbol_name) for symbol_name in symbols ]
-     return response
+     await create_stub_data()
+     return stub_data
+
+@router.post("/symbol", response_model=List[Symbol])
+async def add_symbol(symbol_name: str):
+	await create_stub_data()
+	new_data = await create_symbol(symbol_name)
+	stub_data.append(new_data)
+	return stub_data
