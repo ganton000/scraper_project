@@ -1,5 +1,4 @@
 from typing import Optional
-from datetime import date
 
 from pydantic import BaseModel, Field
 
@@ -7,7 +6,7 @@ from pydantic import BaseModel, Field
 class Symbol(BaseModel):
 	symbol: str
 	name: str
-	date_scraped: date
+	date_scraped: str
 	exchange: str = "NASDAQ"
 	price: float
 	market_cap: float = Field(

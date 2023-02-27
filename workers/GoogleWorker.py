@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 class GoogleFinanceWorker(Thread):
 
 
-	def __init__(self, symbol: str, output_queue: Queue[str], exchange: str="NASDAQ", **kwargs) -> None:
+	def __init__(self, symbol: str, output_queue: Queue[str]=None, exchange: str="NASDAQ", **kwargs) -> None:
 		super(GoogleFinanceWorker, self).__init__()
 		self._symbol = symbol.upper()
 		self._exchange = exchange.upper()
@@ -51,13 +51,13 @@ class GoogleFinanceWorker(Thread):
 			nested_div = parent_div.find('div', {'class': 'YMlKec fxKbKc'})
 			params["close_price"] = float(nested_div.text.replace("$",""))
 
+			params["symbol"] = self._symbol
 			params["name"] = page_contents.select(".zzDege")[0].text
 			params["position"] = "gain" if params["close_price"] > params["prev_close"] else "loss"
 			params["close_diff"]  = params["prev_close"] - params["close_price"]
 			params["close_diff_percent"] = - round((params["close_diff"]/params["prev_close"])*100, 2) \
 				if params["close_diff"] < 0 else round((params["close_diff"]/params["prev_close"])*100, 2)
 
-			print(params)
 			return params
 
 

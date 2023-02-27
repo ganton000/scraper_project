@@ -12,7 +12,7 @@ app.include_router(stocks.router)
 
 @app.get("/")
 def home() -> dict:
-    return {"message": "Hello Rosa"}
+    return {"message": "Hello World"}
 
 
 
