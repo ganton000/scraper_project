@@ -46,7 +46,12 @@ class GoogleFinanceWorker(Thread):
 			params = dict(zip(table_keys, table_values))
 			params["date_scraped"] = date.today().strftime("%m/%d/%Y")
 			params["price"] = float(page_contents.find("div", { "class" : "YMlKec fxKbKc"}).text.replace("$",""))
-			params["close_price"] =
+
+			parent_div = page_contents.find('div', {'jsname': 'ip75Cb', 'class': 'kf1m0'})
+			nested_div = parent_div.find('div', {'class': 'YMlKec fxKbKc'})
+			params["close_price"] = float(nested_div.text.replace("$",""))
+
+			params["name"] = page_contents.select(".zzDege")[0].text
 			params["position"] = "gain" if params["close_price"] > params["prev_close"] else "loss"
 			params["close_diff"]  = params["prev_close"] - params["close_price"]
 			params["close_diff_percent"] = - round((params["close_diff"]/params["prev_close"])*100, 2) \
@@ -76,7 +81,6 @@ async def main():
 	symbol = "tsla"
 	stocks_queue = Queue()
 	worker = GoogleFinanceWorker(symbol, stocks_queue)
-
 
 	results = asyncio.create_task(worker.process_data())
 
