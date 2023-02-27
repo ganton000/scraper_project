@@ -61,7 +61,7 @@ class GoogleFinanceWorker(Thread):
 			return params
 
 
-	async def run(self):
+	async def run(self) -> None:
 		pass
 
 class GoogleFinanceProcessor(Thread):
@@ -71,10 +71,24 @@ class GoogleFinanceProcessor(Thread):
 		self._input_queue = input_queue
 		self._output_queue = output_queue
 
-
-	async def run(self):
+	async def process_data(self):
 		pass
 
+	async def run(self) -> None:
+		pass
+
+class GoogleFinanceWriter(Thread):
+
+	def __init__(self, file_name: str, input_queue: Queue[str], **kwargs) -> None:
+		super(GoogleFinanceWriter, self).__init__()
+		self._input_queue = input_queue
+		self.file_name = file_name
+
+	async def write_data(self):
+		pass
+
+	async def run(self) -> None:
+		pass
 
 async def main():
 
