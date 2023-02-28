@@ -53,10 +53,9 @@ class GoogleFinanceWorker(Thread):
 
 			params["symbol"] = self._symbol
 			params["name"] = page_contents.select(".zzDege")[0].text
-			params["position"] = "gain" if params["close_price"] > params["prev_close"] else "loss"
-			params["close_diff"]  = params["prev_close"] - params["close_price"]
-			params["close_diff_percent"] = - round((params["close_diff"]/params["prev_close"])*100, 2) \
-				if params["close_diff"] < 0 else round((params["close_diff"]/params["prev_close"])*100, 2)
+			params["position"] = "Gain" if params["close_price"] > params["prev_close"] else "Loss"
+			params["close_diff"]  = round(abs(params["close_price"] - params["prev_close"]), 2)
+			params["close_diff_percent"] = round((params["close_diff"]/params["prev_close"])*100, 2)
 
 			return params
 

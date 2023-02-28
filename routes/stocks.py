@@ -23,14 +23,17 @@ async def create_stub_data() -> list[Symbol]:
 
 
 async def get_all_symbols_with_pagination(start: int, limit: int) -> list[Symbol]:
+	global STUB_DATA
 	await create_stub_data()
 	symbols_arr = []
 	for idx in range(len(STUB_DATA)):
 		if idx < start:
 			continue
-		if len(symbols_arr) >= limit:
+		elif len(symbols_arr) >= limit:
 			break
-		symbols_arr.append(STUB_DATA[idx])
+		else:
+			symbols_arr.append(STUB_DATA[idx])
+	STUB_DATA = [] # reset global
 	return symbols_arr
 
 router = APIRouter()
@@ -45,6 +48,7 @@ async def get_all_symbols(start: int=0, limit: int=2) -> MultipleSymbols:
     symbols = await get_all_symbols_with_pagination(start, limit)
     formatted_symbols = { "symbols": symbols }
     symbols_response = MultipleSymbols(**formatted_symbols)
+    print(len(STUB_DATA))
     return symbols_response
 
 @router.post("/symbol", response_model=MultipleSymbols)
