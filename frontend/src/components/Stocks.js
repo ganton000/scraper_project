@@ -4,7 +4,7 @@ import { api } from "../apis/api";
 
 
 const Stocks = () => {
-    const [stockData, setStockData] = useState([]);
+    const [stockData, setStockData] = useState(null);
 
     useEffect(() => {
 
@@ -22,7 +22,7 @@ const Stocks = () => {
         fetchStocks();
     }, []);
 
-    return stockData.length > 0 ? (
+    return stockData?.length ? (
         stockData.map((stock, idx) => {
             return (
                 <div className="stock-item" key={idx}>

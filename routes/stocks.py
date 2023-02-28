@@ -1,9 +1,8 @@
 import asyncio
-from typing import List
 
 from fastapi import APIRouter
 
-from models.symbol import Symbol
+from models.symbol import Symbol, MultipleSymbols
 from workers.GoogleWorker import GoogleFinanceWorker
 
 
@@ -12,31 +11,44 @@ symbols = ["AAPL", "TSLA", "MSFT"]
 
 STUB_DATA = []
 
-async def create_stub_data() -> List[Symbol]:
-	for symbol_name in symbols:
-		STUB_DATA.append(await create_symbol(symbol_name))
-	return STUB_DATA
-
 async def create_symbol(symbol_name: str) -> Symbol:
 	worker = GoogleFinanceWorker(symbol_name)
 	symbol_data = await worker.process_data()
 	return Symbol(**symbol_data)
+
+async def create_stub_data() -> list[Symbol]:
+	for symbol_name in symbols:
+		STUB_DATA.append(await create_symbol(symbol_name))
+	return STUB_DATA
+
+
+async def get_all_symbols_with_pagination(start: int, limit: int) -> list[Symbol]:
+	await create_stub_data()
+	symbols_arr = []
+	for idx in range(len(STUB_DATA)):
+		if idx < start:
+			continue
+		if len(symbols_arr) >= limit:
+			break
+		symbols_arr.append(STUB_DATA[idx])
+	return symbols_arr
 
 router = APIRouter()
 
 @router.get("/symbol/{symbol_name}", response_model=Symbol)
 async def get_symbol(symbol_name: str) -> Symbol:
 	symbol = await create_symbol(symbol_name)
-	print(symbol)
 	return symbol
 
-@router.get("/symbols", response_model=List[Symbol])
-async def get_symbols() -> List[Symbol]:
-     await create_stub_data()
-     return STUB_DATA
+@router.get("/symbols", response_model=MultipleSymbols)
+async def get_all_symbols(start: int=0, limit: int=2) -> MultipleSymbols:
+    symbols = await get_all_symbols_with_pagination(start, limit)
+    formatted_symbols = { "symbols": symbols }
+    symbols_response = MultipleSymbols(**formatted_symbols)
+    return symbols_response
 
-@router.post("/symbol", response_model=List[Symbol])
-async def add_symbol(symbol_name: str) -> List[Symbol]:
+@router.post("/symbol", response_model=MultipleSymbols)
+async def add_symbol(symbol_name: str) -> MultipleSymbols:
 	await create_stub_data()
 	new_data = await create_symbol(symbol_name)
 	STUB_DATA.append(new_data)

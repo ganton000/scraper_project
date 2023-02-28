@@ -26,3 +26,6 @@ class Symbol(BaseModel):
 	avg_volume: float = Field(
 		description="avg trading volume in millions"
 	)
+
+class MultipleSymbols(BaseModel):
+	symbols: list[Symbol]
