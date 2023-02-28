@@ -12,7 +12,7 @@ symbols = ["AAPL", "TSLA", "MSFT"]
 
 STUB_DATA = []
 
-async def create_stub_data():
+async def create_stub_data() -> List[Symbol]:
 	for symbol_name in symbols:
 		STUB_DATA.append(await create_symbol(symbol_name))
 	return STUB_DATA
@@ -30,13 +30,13 @@ async def get_symbol(symbol_name: str) -> Symbol:
 	print(symbol)
 	return symbol
 
-@router.get("/symbols/", response_model=List[Symbol])
-async def get_symbols():
+@router.get("/symbols", response_model=List[Symbol])
+async def get_symbols() -> List[Symbol]:
      await create_stub_data()
      return STUB_DATA
 
 @router.post("/symbol", response_model=List[Symbol])
-async def add_symbol(symbol_name: str):
+async def add_symbol(symbol_name: str) -> List[Symbol]:
 	await create_stub_data()
 	new_data = await create_symbol(symbol_name)
 	STUB_DATA.append(new_data)

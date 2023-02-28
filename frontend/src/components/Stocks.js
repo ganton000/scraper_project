@@ -22,7 +22,7 @@ const Stocks = () => {
         fetchStocks();
     }, []);
 
-    return stockData.length ? (
+    return stockData.length > 0 ? (
         stockData.map((stock, idx) => {
             return (
                 <div className="stock-item" key={idx}>
