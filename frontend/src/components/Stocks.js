@@ -35,10 +35,34 @@ const Stocks = () => {
                                 <td className={stock.position === "Gain" ? "td-green" : "td-red"}>{stock.position}</td>
                             </tr>
                             <tr>
-                            <th scope="col">Price</th>
-                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>{stock.price}</td>
+                            <th scope="col">Current Price</th>
+                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>${stock.price}</td>
                                 <th scope="col">Last Scraped</th>
                                 <td >{stock.date_scraped}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Today's Close</th>
+                                <td >${stock.close_price}</td>
+                                <th scope="col">Previous Close</th>
+                                <td >${stock.prev_close}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Change</th>
+                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>${stock.close_diff}</td>
+                                <th scope="col">Change (in %)</th>
+                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>{stock.close_diff_percent}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Day Low</th>
+                                <td >${stock.day_low}</td>
+                                <th scope="col">Year Low</th>
+                                <td >${stock.year_low}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Day High</th>
+                                <td >${stock.day_high}</td>
+                                <th scope="col">Year High</th>
+                                <td >${stock.year_high}</td>
                             </tr>
                             <tr>
                                 <th scope="col">Exchange</th>
@@ -51,30 +75,6 @@ const Stocks = () => {
                                 <td >{stock.dividend_yield}</td>
                                 <th scope="col">Average Volume (in millions)</th>
                                 <td >{stock.avg_volume}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">Today's Close</th>
-                                <td >{stock.close_price}</td>
-                                <th scope="col">Previous Close</th>
-                                <td >{stock.prev_close}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">Change</th>
-                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>{stock.close_diff}</td>
-                                <th scope="col">Change (in %)</th>
-                                <td className={stock.position === "Gain" ? "td-green" : "td-red"}>{stock.close_diff_percent}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">Day Low</th>
-                                <td >{stock.day_low}</td>
-                                <th scope="col">Year Low</th>
-                                <td >{stock.year_low}</td>
-                            </tr>
-                            <tr>
-                                <th scope="col">Day High</th>
-                                <td >{stock.day_high}</td>
-                                <th scope="col">Year High</th>
-                                <td >{stock.year_high}</td>
                             </tr>
                         </tbody>
                     </table>
