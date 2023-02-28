@@ -5,7 +5,7 @@ import Stocks from "./components/Stocks";
 const App = () => {
 
     return (
-		<div>
+		<div className="stock-list">
 			<Stocks />
 		</div>
 	);

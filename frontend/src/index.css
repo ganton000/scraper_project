@@ -33,12 +33,10 @@ ul {
 
 h1 {
 	font-size: 2.5rem;
-	color: #2c292b;
 }
 
 h2 {
 	font-size: 1.5rem;
-	color: #2c292b;
 }
 
 input {
@@ -55,4 +53,56 @@ input:focus {
 	outline: none;
 	box-shadow: 0 1rem 2rem rgba(#000, .1);
 	border-bottom: 4px solid #86325c;
+}
+
+
+
+.stock-list {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: repeat(5, 1fr);
+	grid-gap: 7rem;
+	padding: 3rem;
+	width: 90%;
+	height: 90%;
+	max-width: 130rem;
+}
+
+.stock-item {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding: 20px;
+	color: #000;
+	background-color: whitesmoke;
+	height: auto;
+	width: auto;
+	border-radius: 10px;
+	border: none;
+	box-shadow: 0 2.4rem 4.8rem rgba(0,0,0,0.075);
+}
+
+.stock-item > table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.stock-item > table td {
+	padding: 10px;
+}
+
+.td-green {
+	color: rgba(52, 224, 26, 0.924);
+	font-weight: bold;
+}
+
+.td-red {
+	color: rgba(185, 50, 120, 0.8);
+	font-weight: bold;
+}
+
+.stock-item h1 {
+	margin: 0 auto;
+	margin-bottom: 5px;
+	text-align: center;
 }
