@@ -10,7 +10,7 @@ const Stocks = () => {
 
         const fetchStocks = async () => {
             try {
-                const response = await api.get("/symbols");
+                const response = await api.get("/symbol/all");
                 setStockData(response?.data?.symbols);
 
             } catch(error) {
