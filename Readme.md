@@ -3,7 +3,7 @@
 ## Description
 
 This project scrapes Google Finance for stock data, then parses the data and stores it in a Relational Database (we're using MySQL).
-We then hosts api endpoints with the relevant stock data through DB queries.
+We then host our backend api endpoints with the relevant stock data through DB queries. Finally, the data is dynamically rendered on the client-side through a react app.
 
 ## Tech Stack
 
@@ -13,7 +13,7 @@ We then hosts api endpoints with the relevant stock data through DB queries.
 <br>
 
 *	Frontend: JavaScript, React, CSS
-	*	Libraries:	Axios
+	*	Libraries:	Axios, React-Router
 
 ## Installation
 
