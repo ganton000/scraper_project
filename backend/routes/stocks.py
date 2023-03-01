@@ -6,7 +6,7 @@ from services.symbol_service import SymbolService
 
 
 def create_stock_router() -> APIRouter:
-	router = APIRouter(prefix="/symbol")
+	router = APIRouter(prefix="/symbol", tags=["stocks"])
 
 	symbol_service = SymbolService()
 
