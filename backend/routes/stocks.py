@@ -4,16 +4,17 @@ from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
 from services.exceptions import NotFoundException
 from utils.utils import get_file_logger, get_console_logger
-from helpers.dependencies import rate_limit
+from helpers.dependencies import RateLimit
 
 
 def create_stock_router(log_level: str) -> APIRouter:
 
 	# initializations
+	rate_limiter = RateLimit().create_rate_limiter
 	router = APIRouter(
 		prefix="/symbol",
 		tags=["stocks"],
-		dependencies=[Depends(rate_limit)]
+		dependencies=[Depends(rate_limiter)]
 	)
 	symbol_service = SymbolService()
 	logger = get_file_logger(__name__, log_level)
