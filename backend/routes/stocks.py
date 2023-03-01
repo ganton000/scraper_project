@@ -1,9 +1,40 @@
-from fastapi import APIRouter, HTTPException
+from time import time
+
+from fastapi import APIRouter, Response
 
 from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
-from services.exceptions import NotFoundException
-from utils.utils import get_file_logger
+from services.exceptions import NotFoundException, RateLimitExceeded
+from utils.utils import get_file_logger, get_console_logger
+
+
+## globals
+START_TIME = time()
+RESET_INTERVAL = 3600 ## seconds
+REQUEST_COUNT = 0
+REQUEST_LIMIT = 5
+
+def rate_limit(response: Response) -> None:
+	global START_TIME
+	global RESET_INTERVAL
+	global REQUEST_COUNT
+	global REQUEST_LIMIT
+
+	# reset
+	if time() > (START_TIME + RESET_INTERVAL):
+		START_TIME = time()
+		REQUEST_COUNT = 0
+
+	# limit reached
+	if REQUEST_COUNT >= REQUEST_LIMIT:
+		timeout = round(START_TIME + RESET_INTERVAL - time(), 2) + 0.01
+		raise RateLimitExceeded(timeout)
+
+	REQUEST_COUNT += 1
+	# create header for rate-limit
+	response.headers["X-app-rate-limit"] = f"{REQUEST_COUNT}:{REQUEST_LIMIT}"
+
+	return None
 
 def create_stock_router(log_level: str) -> APIRouter:
 
@@ -30,7 +61,7 @@ def create_stock_router(log_level: str) -> APIRouter:
 		return STUB_DATA
 
 
-	@router.get("/all", response_model=MultipleSymbols)
+	@router.get("/all", response_model=MultipleSymbols, response: Response)
 	async def get_all_symbols(start: int=0, limit: int=4) -> MultipleSymbols:
 		"""Endpoint to retrieve all Symbols
 
@@ -47,7 +78,7 @@ def create_stock_router(log_level: str) -> APIRouter:
 		return symbols_response
 
 	@router.get("/{symbol_name}", response_model=Symbol)
-	async def get_symbol(symbol_name: str) -> Symbol:
+	async def get_symbol(symbol_name: str, response: Response) -> Symbol:
 		"""Endpoint to retrieve a Symbol by its name attribute.
 
 		Args:
@@ -56,6 +87,7 @@ def create_stock_router(log_level: str) -> APIRouter:
 		Returns:
 			Symbol
 		"""
+		response.headers[] =
 		logger.info(f"Fetching {symbol_name}...")
 		symbol = await symbol_service.create_symbol(symbol_name)
 		return symbol
