@@ -1,16 +1,15 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
-
-
+from services.exceptions import NotFoundException
 
 def create_stock_router() -> APIRouter:
 	router = APIRouter(prefix="/symbol", tags=["stocks"])
 
 	symbol_service = SymbolService()
 
-	@router.post("/", response_model=MultipleSymbols)
+	@router.post("/", response_model=MultipleSymbols, status_code=201)
 	async def add_symbol(symbol_name: str) -> MultipleSymbols:
 		"""Endpoint to create a new Symbol. Triggers the worker to scrape the data.
 
@@ -98,7 +97,7 @@ def create_stock_router() -> APIRouter:
 		filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
 
 		if len(filtered_stub_data) == len(STUB_DATA):
-			return { "message" : f"{symbol_name} does not exist!" }
+			raise NotFoundException(symbol_name)
 
 		STUB_DATA = filtered_stub_data
 

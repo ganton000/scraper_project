@@ -6,3 +6,4 @@ password= settings.DB_PASSWORD
 host = settings.DB_HOST
 port = settings.DB_PORT
 database_name = settings.DB_NAME
+
