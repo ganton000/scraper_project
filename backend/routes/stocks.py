@@ -3,13 +3,14 @@ from fastapi import APIRouter, HTTPException
 from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
 from services.exceptions import NotFoundException
+from utils.utils import get_file_logger
 
-
-def create_stock_router(logger: object) -> APIRouter:
+def create_stock_router(log_level: str) -> APIRouter:
 
 	# initializations
 	router = APIRouter(prefix="/symbol", tags=["stocks"])
 	symbol_service = SymbolService()
+	logger = get_file_logger(__name__, log_level)
 
 
 	@router.post("/", response_model=MultipleSymbols, status_code=201)

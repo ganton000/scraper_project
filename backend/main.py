@@ -3,12 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 import uvicorn
 
-from utils.utils import get_file_logger
+
 from routes.stocks import create_stock_router
 
 # initialize logger
 log_level = "INFO"
-logger = get_file_logger(log_level)
+
 
 
 
@@ -27,7 +27,7 @@ def create_app(origins: list[str]) -> FastAPI:
         allow_headers=["*"]
     )
 
-    stock_router = create_stock_router(logger)
+    stock_router = create_stock_router(log_level)
     app.include_router(stock_router)
 
     return app
