@@ -6,6 +6,8 @@ from services.symbol_service import SymbolService
 
 router = APIRouter()
 
+symbol_service = SymbolService()
+
 @router.post("/symbol", response_model=MultipleSymbols)
 async def add_symbol(symbol_name: str) -> MultipleSymbols:
 	"""Endpoint to create a new Symbol. Triggers the worker to scrape the data.
@@ -16,8 +18,8 @@ async def add_symbol(symbol_name: str) -> MultipleSymbols:
 	Returns:
 		MultipleSymbols: List of Symbols
 	"""
-	await create_stub_data()
-	new_data = await create_symbol(symbol_name)
+	await symbol_service.create_stub_data()
+	new_data = await symbol_service.create_symbol(symbol_name)
 	STUB_DATA.append(new_data)
 	return STUB_DATA
 
@@ -31,7 +33,7 @@ async def get_symbol(symbol_name: str) -> Symbol:
 	Returns:
 		Symbol
 	"""
-	symbol = await create_symbol(symbol_name)
+	symbol = await symbol_service.create_symbol(symbol_name)
 	return symbol
 
 @router.put("/symbol/{symbol_name}")
@@ -48,7 +50,7 @@ async def update_symbol(new_symbol_data: dict) -> MultipleSymbols:
 
 	STUB_DATA = [] ## reset
 
-	await create_stub_data()
+	await symbol_service.create_stub_data()
 
 	symbol_name = new_symbol_data.get("symbol")
 
@@ -69,7 +71,7 @@ async def get_all_symbols(start: int=0, limit: int=4) -> MultipleSymbols:
 	Returns:
 		MultipleSymbols: List of Symbols
 	"""
-	symbols = await get_all_symbols_with_pagination(start, limit)
+	symbols = await symbol_service.get_all_symbols_with_pagination(start, limit)
 	formatted_symbols = { "symbols": symbols }
 	symbols_response = MultipleSymbols(**formatted_symbols)
 	return symbols_response
@@ -88,7 +90,7 @@ async def delete_symbol(symbol_name: str) -> dict:
 
 	STUB_DATA = [] ## reset
 
-	await create_stub_data()
+	await symbol_service.create_stub_data()
 
 	filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
 
