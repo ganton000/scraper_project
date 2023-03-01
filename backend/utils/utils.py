@@ -19,8 +19,8 @@ def read_if_exists(filename: str) -> Union[List, Generator]:
 
     return []
 
-def get_file_logger(file_name: str, log_level: str="INFO") -> object:
-    logger = logging.getLogger(file_name)
+def get_file_logger(file_path: str, log_level: str="INFO") -> object:
+    logger = logging.getLogger(file_path)
     logger.setLevel(log_level)
     logging.basicConfig(
         format="%(levelname)s %(name)s %(asctime)s %(message)s",
@@ -30,11 +30,11 @@ def get_file_logger(file_name: str, log_level: str="INFO") -> object:
 
     return logger
 
-def get_console_logger(file_name: str, log_level: str="INFO") -> object:
-    logger = logging.getLogger(file_name)
+def get_console_logger(file_path: str, log_level: str="INFO") -> object:
+    logger = logging.getLogger(file_path)
     logger.setLevel(log_level)
 
-    logger.basicConfig(
+    logging.basicConfig(
         format="%(levelname)s %(name)s %(asctime)s %(message)s",
         datefmt="%y-%m-%d %H-%M-%S"
     )
