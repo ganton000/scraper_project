@@ -3,19 +3,16 @@ import asyncio
 import aiohttp
 from datetime import date
 from threading import Thread
-from queue import Queue
+from queue import Queue, Empty
 
 from bs4 import BeautifulSoup
 
 
-class GoogleFinanceWorker(Thread):
+class GoogleFinanceWorker:
 
-
-	def __init__(self, symbol: str, output_queue: Queue[str]=None, exchange: str="NASDAQ", **kwargs) -> None:
-		super(GoogleFinanceWorker, self).__init__()
+	def __init__(self, symbol: str, exchange: str="NASDAQ", **kwargs) -> None:
 		self._symbol = symbol.upper()
 		self._exchange = exchange.upper()
-		self._output_queue = output_queue
 		self._url = f"https://www.google.com/finance/quote/{self._symbol}:{self._exchange}?hl=en"
 
 
@@ -42,7 +39,7 @@ class GoogleFinanceWorker(Thread):
 			parsed_values = re.findall(pattern, values)
 
 			# convert numeric strings to float and create dict
-			table_values = [ float(val) for val in parsed_values ][0:9]
+			table_values = (float(val) for val in parsed_values[:9])
 			params = dict(zip(table_keys, table_values))
 			params["date_scraped"] = date.today().strftime("%m/%d/%Y")
 			params["price"] = float(page_contents.find("div", { "class" : "YMlKec fxKbKc"}).text.replace("$",""))
@@ -59,24 +56,7 @@ class GoogleFinanceWorker(Thread):
 
 			return params
 
-
-	async def run(self) -> None:
-		pass
-
-class GoogleFinanceProcessor(Thread):
-
-	def __init__(self, input_queue: Queue[str], output_queue: Queue[str], **kwargs) -> None:
-		super(GoogleFinanceProcessor, self).__init__()
-		self._input_queue = input_queue
-		self._output_queue = output_queue
-
-	async def process_data(self):
-		pass
-
-	async def run(self) -> None:
-		pass
-
-class GoogleFinanceWriter(Thread):
+class GoogleFinanceWriter:
 
 	def __init__(self, file_name: str, input_queue: Queue[str], **kwargs) -> None:
 		super(GoogleFinanceWriter, self).__init__()
@@ -86,8 +66,31 @@ class GoogleFinanceWriter(Thread):
 	async def write_data(self):
 		pass
 
+
+class GoogleFinanceQueueScheduler(Thread):
+
+	def __init__(self, input_queue: Queue[str]=None, output_queue: Queue[str]=None, **kwargs) -> None:
+		super(GoogleFinanceQueueScheduler, self).__init__()
+		self._output_queue = output_queue
+		self._input_queue = input_queue
+
 	async def run(self) -> None:
-		pass
+		while True:
+
+			try:
+				ticker_symbol = self._input_queue.get()
+			except Empty:
+				print("{self.__name__} queue is empty")
+				break
+
+			if ticker_symbol == "FINISHED":
+				break
+
+			finance_worker = GoogleFinanceWorker(ticker_symbol)
+			stock_dict = asyncio.create_task(finance_worker.process_data())
+
+			self._output_queue.put(await stock_dict)
+
 
 async def main():
 
