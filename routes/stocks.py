@@ -75,3 +75,19 @@ async def get_all_symbols(start: int=0, limit: int=4) -> MultipleSymbols:
     symbols_response = MultipleSymbols(**formatted_symbols)
     return symbols_response
 
+@router.delete("/symbol/{symbol_name}")
+async def update_symbol(symbol_name: str) -> dict:
+	global STUB_DATA
+
+	STUB_DATA = [] ## reset
+
+	await create_stub_data()
+
+	filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
+
+	if len(filtered_stub_data) == len(STUB_DATA):
+		return { "message" : f"{symbol_name} does not exist!" }
+
+	STUB_DATA = filtered_stub_data
+
+	return { "message" : f"{symbol_name} was successfully deleted!"}
