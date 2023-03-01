@@ -3,7 +3,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
 import uvicorn
 
+from utils.utils import get_file_logger
 from routes.stocks import create_stock_router
+
+# initialize logger
+log_level = "INFO"
+logger = get_file_logger(log_level)
+
 
 
 origins = ["http://localhost", "http://localhost:3000"] ## react dev
@@ -21,7 +27,7 @@ def create_app(origins: list[str]) -> FastAPI:
         allow_headers=["*"]
     )
 
-    stock_router = create_stock_router()
+    stock_router = create_stock_router(logger)
     app.include_router(stock_router)
 
     return app

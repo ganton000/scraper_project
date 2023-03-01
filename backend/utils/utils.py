@@ -1,3 +1,5 @@
+import os
+import logging
 from typing import Union, List, Generator
 
 
@@ -16,3 +18,29 @@ def read_if_exists(filename: str) -> Union[List, Generator]:
          yield from read_file(filename)
 
     return []
+
+def get_file_logger(log_level: str="INFO") -> object:
+    logger = logging.getLogger(__name__)
+    logger.setLevel(log_level)
+    logging.basicConfig(
+        format="%(levelname)s %(name)s %(asctime)s %(message)s",
+        datefmt="%y-%m-%d %H-%M-%S",
+        filename="logs/logs.txt"
+    )
+
+    return logger
+
+def get_console_logger(log_level: str="INFO") -> object:
+    logger = logging.getLogger(__name__)
+    logger.setLevel(log_level)
+
+    logger.basicConfig(
+        format="%(levelname)s %(name)s %(asctime)s %(message)s",
+        datefmt="%y-%m-%d %H-%M-%S"
+    )
+
+    ## add stdout logger
+    console = logging.StreamHandler()
+    logger.addHandler(console)
+
+    return logger

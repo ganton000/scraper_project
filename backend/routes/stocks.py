@@ -4,10 +4,13 @@ from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
 from services.exceptions import NotFoundException
 
-def create_stock_router() -> APIRouter:
-	router = APIRouter(prefix="/symbol", tags=["stocks"])
 
+def create_stock_router(logger: object) -> APIRouter:
+
+	# initializations
+	router = APIRouter(prefix="/symbol", tags=["stocks"])
 	symbol_service = SymbolService()
+
 
 	@router.post("/", response_model=MultipleSymbols, status_code=201)
 	async def add_symbol(symbol_name: str) -> MultipleSymbols:
@@ -19,6 +22,7 @@ def create_stock_router() -> APIRouter:
 		Returns:
 			MultipleSymbols: List of Symbols
 		"""
+		logger.info(f"Creating {symbol_name} symbol...")
 		await symbol_service.create_stub_data()
 		new_data = await symbol_service.create_symbol(symbol_name)
 		STUB_DATA.append(new_data)
@@ -51,6 +55,7 @@ def create_stock_router() -> APIRouter:
 		Returns:
 			Symbol
 		"""
+		logger.info(f"Fetching {symbol_name}...")
 		symbol = await symbol_service.create_symbol(symbol_name)
 		return symbol
 
@@ -64,6 +69,7 @@ def create_stock_router() -> APIRouter:
 		Returns:
 			MultipleSymbols: List of Symbols
 		"""
+		logger.info(f"Updating {symbol_name}...")
 		global STUB_DATA
 
 		STUB_DATA = [] ## reset
@@ -88,6 +94,7 @@ def create_stock_router() -> APIRouter:
 		Returns:
 			dict: success or does not exist message
 		"""
+		logger.info(f"Deleting {symbol_name}...")
 		global STUB_DATA
 
 		STUB_DATA = [] ## reset
@@ -97,6 +104,7 @@ def create_stock_router() -> APIRouter:
 		filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
 
 		if len(filtered_stub_data) == len(STUB_DATA):
+			logger.error(f"Error deleting {symbol_name}... not found")
 			raise NotFoundException(symbol_name)
 
 		STUB_DATA = filtered_stub_data
