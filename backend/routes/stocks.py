@@ -4,99 +4,104 @@ from models.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
 
 
-router = APIRouter()
 
-symbol_service = SymbolService()
+def create_stock_router() -> APIRouter:
+	router = APIRouter(prefix="/symbol")
 
-@router.post("/symbol", response_model=MultipleSymbols)
-async def add_symbol(symbol_name: str) -> MultipleSymbols:
-	"""Endpoint to create a new Symbol. Triggers the worker to scrape the data.
+	symbol_service = SymbolService()
 
-	Args:
-		symbol_name (str): provided name of symbol.
+	@router.post("/", response_model=MultipleSymbols)
+	async def add_symbol(symbol_name: str) -> MultipleSymbols:
+		"""Endpoint to create a new Symbol. Triggers the worker to scrape the data.
 
-	Returns:
-		MultipleSymbols: List of Symbols
-	"""
-	await symbol_service.create_stub_data()
-	new_data = await symbol_service.create_symbol(symbol_name)
-	STUB_DATA.append(new_data)
-	return STUB_DATA
+		Args:
+			symbol_name (str): provided name of symbol.
 
-@router.get("/symbol/{symbol_name}", response_model=Symbol)
-async def get_symbol(symbol_name: str) -> Symbol:
-	"""Endpoint to retrieve a Symbol by its name attribute.
+		Returns:
+			MultipleSymbols: List of Symbols
+		"""
+		await symbol_service.create_stub_data()
+		new_data = await symbol_service.create_symbol(symbol_name)
+		STUB_DATA.append(new_data)
+		return STUB_DATA
 
-	Args:
-		symbol_name (str): unique Symbol name
 
-	Returns:
-		Symbol
-	"""
-	symbol = await symbol_service.create_symbol(symbol_name)
-	return symbol
+	@router.get("/all", response_model=MultipleSymbols)
+	async def get_all_symbols(start: int=0, limit: int=4) -> MultipleSymbols:
+		"""Endpoint to retrieve all Symbols
 
-@router.put("/symbol/{symbol_name}")
-async def update_symbol(new_symbol_data: dict) -> MultipleSymbols:
-	"""Endpoint to update a Symbol with the attributes provided
+		Args:
+			start (int, optional): index to begin pagination. Defaults to 0.
+			limit (int, optional): index to end paginated results. Defaults to 4.
 
-	Args:
-		new_symbol_data (dict): JSON of symbol data information to be updated
+		Returns:
+			MultipleSymbols: List of Symbols
+		"""
+		symbols = await symbol_service.get_all_symbols_with_pagination(start, limit)
+		formatted_symbols = { "symbols": symbols }
+		symbols_response = MultipleSymbols(**formatted_symbols)
+		return symbols_response
 
-	Returns:
-		MultipleSymbols: List of Symbols
-	"""
-	global STUB_DATA
+	@router.get("/{symbol_name}", response_model=Symbol)
+	async def get_symbol(symbol_name: str) -> Symbol:
+		"""Endpoint to retrieve a Symbol by its name attribute.
 
-	STUB_DATA = [] ## reset
+		Args:
+			symbol_name (str): unique Symbol name
 
-	await symbol_service.create_stub_data()
+		Returns:
+			Symbol
+		"""
+		symbol = await symbol_service.create_symbol(symbol_name)
+		return symbol
 
-	symbol_name = new_symbol_data.get("symbol")
+	@router.put("/{symbol_name}")
+	async def update_symbol(new_symbol_data: dict) -> MultipleSymbols:
+		"""Endpoint to update a Symbol with the attributes provided
 
-	filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
-	filtered_stub_data.append(Symbol(**new_symbol_data))
-	formatted_symbols = { "symbols": filtered_stub_data }
-	symbols_response = MultipleSymbols(**formatted_symbols)
-	return symbols_response
+		Args:
+			new_symbol_data (dict): JSON of symbol data information to be updated
 
-@router.get("/symbols", response_model=MultipleSymbols)
-async def get_all_symbols(start: int=0, limit: int=4) -> MultipleSymbols:
-	"""Endpoint to retrieve all Symbols
+		Returns:
+			MultipleSymbols: List of Symbols
+		"""
+		global STUB_DATA
 
-	Args:
-		start (int, optional): index to begin pagination. Defaults to 0.
-		limit (int, optional): index to end paginated results. Defaults to 4.
+		STUB_DATA = [] ## reset
 
-	Returns:
-		MultipleSymbols: List of Symbols
-	"""
-	symbols = await symbol_service.get_all_symbols_with_pagination(start, limit)
-	formatted_symbols = { "symbols": symbols }
-	symbols_response = MultipleSymbols(**formatted_symbols)
-	return symbols_response
+		await symbol_service.create_stub_data()
 
-@router.delete("/symbol/{symbol_name}")
-async def delete_symbol(symbol_name: str) -> dict:
-	"""Endpoint to remove a stock Symbol
+		symbol_name = new_symbol_data.get("symbol")
 
-	Args:
-		symbol_name (str): name attribute of Symbol
+		filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
+		filtered_stub_data.append(Symbol(**new_symbol_data))
+		formatted_symbols = { "symbols": filtered_stub_data }
+		symbols_response = MultipleSymbols(**formatted_symbols)
+		return symbols_response
 
-	Returns:
-		dict: success or does not exist message
-	"""
-	global STUB_DATA
+	@router.delete("/{symbol_name}")
+	async def delete_symbol(symbol_name: str) -> dict:
+		"""Endpoint to remove a stock Symbol
 
-	STUB_DATA = [] ## reset
+		Args:
+			symbol_name (str): name attribute of Symbol
 
-	await symbol_service.create_stub_data()
+		Returns:
+			dict: success or does not exist message
+		"""
+		global STUB_DATA
 
-	filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
+		STUB_DATA = [] ## reset
 
-	if len(filtered_stub_data) == len(STUB_DATA):
-		return { "message" : f"{symbol_name} does not exist!" }
+		await symbol_service.create_stub_data()
 
-	STUB_DATA = filtered_stub_data
+		filtered_stub_data = [ model for model in STUB_DATA if model.symbol != symbol_name]
 
-	return { "message" : f"{symbol_name} was successfully deleted!"}
+		if len(filtered_stub_data) == len(STUB_DATA):
+			return { "message" : f"{symbol_name} does not exist!" }
+
+		STUB_DATA = filtered_stub_data
+
+		return { "message" : f"{symbol_name} was successfully deleted!"}
+
+	return router
