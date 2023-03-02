@@ -14,15 +14,15 @@ RUN npm run build
 
 FROM nginx:stable-alpine
 
-RUN addgroup -S nginx && adduser -S -G nginx nginx
+RUN addgroup -S nginxuser && adduser -S -G nginxuser nginxuser
 
-RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx
+RUN chown -R nginxuser:nginxuser /var/cache/nginx /var/run /var/log/nginx
 
-COPY --chown=nginx:nginx nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginxuser:nginxuser nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=build --chown=nginx:nginx /frontend/build /usr/share/nginx/html
 
-USER nginx
+USER nginxuser
 
 EXPOSE 80
 
