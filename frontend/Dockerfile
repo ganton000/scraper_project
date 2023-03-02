@@ -4,7 +4,9 @@ RUN adduser -D appuser
 
 WORKDIR /frontend
 
-COPY --chown=appuser:appuser package.json ./
+ENV PATH /frontend/node_modules/.bin:$PATH
+
+COPY --chown=appuser:appuser package*.json ./
 
 RUN npm install
 
@@ -12,15 +14,17 @@ COPY --chown=appuser:appuser ./ ./
 
 RUN npm run build
 
-FROM nginx:stable-alpine
+FROM nginx:1.23.3-alpine
+
+ENV PATH /frontend/node_modules/.bin:$PATH
 
 RUN addgroup -S nginxuser && adduser -S -G nginxuser nginxuser
 
 RUN chown -R nginxuser:nginxuser /var/cache/nginx /var/run /var/log/nginx
 
-COPY --chown=nginxuser:nginxuser nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginxuser:nginxuser ./nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build --chown=nginx:nginx /frontend/build /usr/share/nginx/html
+COPY --from=build --chown=nginxuser:nginxuser /frontend/build /usr/share/nginx/html
 
 USER nginxuser
 
