@@ -22,12 +22,14 @@ RUN addgroup -S nginxuser && adduser -S -G nginxuser nginxuser
 
 RUN chown -R nginxuser:nginxuser /var/cache/nginx /var/run /var/log/nginx
 
-COPY --chown=nginxuser:nginxuser ./nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginxuser:nginxuser nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build --chown=nginxuser:nginxuser /frontend/build /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+
+COPY --from=build --chown=nginxuser:nginxuser /frontend/build ./
 
 USER nginxuser
 
 EXPOSE 80
 
-CMD [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

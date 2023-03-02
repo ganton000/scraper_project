@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./backend/:/pyroot/backend/
+    env_file:
+      - ./env
+    #depends_on:
+    #  - database
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend/:/usr/share/nginx/html/
+    #depends_on:
+    #  - database
