@@ -1,12 +1,14 @@
-FROM node:18-alpine AS build
+FROM node:lts-alpine3.17 AS build
+
+RUN adduser -D appuser
 
 WORKDIR /frontend
 
-COPY package-json .
+COPY --chown=appuser:appuser package-json ./
 
 RUN npm install
 
-COPY . .
+COPY --chown=appuser:appuser ./ ./
 
 RUN npm run build
 
@@ -16,9 +18,9 @@ RUN addgroup -S nginx && adduser -S -G nginx nginx
 
 RUN chown -R nginx:nginx /var/cache/nginx /var/run /var/log/nginx
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build --chown=nginx:nginx /frontend/build /usr/share/nginx/html
 
 USER nginx
 
