@@ -25,9 +25,9 @@ ENV PATH=${PATH}:${PYROOT}/bin:${PYTHONUSERBASE}/bin
 
 WORKDIR ${PYROOT}/backend
 
-COPY --chown=myapp:backenduser --from=install ${PYROOT}/ ${PYROOT}/
+COPY --chown=backenduser:myapp --from=install ${PYROOT}/ ${PYROOT}/
 
-COPY --chown=myapp:backenduser . ./
+COPY --chown=backenduser:myapp . ./
 
 USER backenduser
 
