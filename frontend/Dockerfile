@@ -4,7 +4,7 @@ RUN adduser -D appuser
 
 WORKDIR /frontend
 
-COPY --chown=appuser:appuser package-json ./
+COPY --chown=appuser:appuser package.json ./
 
 RUN npm install
 
