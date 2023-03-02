@@ -29,8 +29,6 @@ COPY --chown=myapp:backenduser --from=install ${PYROOT}/ ${PYROOT}/
 
 COPY --chown=myapp:backenduser . ./
 
-COPY --chown=myapp:backenduser main.py ./
-
 USER backenduser
 
 EXPOSE 8000
