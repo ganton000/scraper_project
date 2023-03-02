@@ -1,26 +1,29 @@
 FROM python:3.10-alpine AS install
 
 ENV PYROOT /pyroot
-ENV PYTHONPATH ${PYROOT}:${PYTHONPATH}
-ENV PATH=${PATH}:${PYROOT}/bin
+ENV PYTHONUSERBASE ${PYROOT}/backend/packages
+ENV PYTHONPATH ${PYROOT}/backend/:${PYTHONPATH}
+ENV PATH=${PATH}:${PYROOT}/bin:${PYTHONUSERBASE}/bin
 
-COPY requirements.txt ${PYROOT}/backend/
+COPY requirements.txt ${PYROOT}/backend/requirements.txt
 
 #RUN apk add --no-cache --virtual .build-deps gcc musl-dev \
-#    && pip install -r ${PYROOT}/backend/requirements.txt \
+#    && pip install -r ${PYROOT}requirements.txt \
 #    && apk del .build-deps
 
-RUN pip install --user -r ${PYROOT}/backend/requirements.txt
 
-WORKDIR ${PYROOT}/backend
+RUN pip install --user -r ${PYROOT}/backend/requirements.txt
 
 FROM python:3.10-alpine
 
 RUN addgroup -S myapp && adduser -S -G myapp --system backenduser
 
 ENV PYROOT /pyroot
-ENV PYTHONPATH ${PYROOT}:${PYTHONPATH}
-ENV PATH=${PATH}:${PYROOT}/bin
+ENV PYTHONUSERBASE ${PYROOT}/backend/packages
+ENV PYTHONPATH ${PYROOT}/backend/:${PYTHONPATH}
+ENV PATH=${PATH}:${PYROOT}/bin:${PYTHONUSERBASE}/bin
+
+WORKDIR ${PYROOT}/backend
 
 COPY --chown=myapp:backenduser --from=install ${PYROOT}/ ${PYROOT}/
 
