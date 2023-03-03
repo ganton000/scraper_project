@@ -1,35 +1,27 @@
 FROM node:lts-alpine3.17 AS build
 
-RUN adduser -D appuser
-
 WORKDIR /frontend
 
-ENV PATH /frontend/node_modules/.bin:$PATH
+COPY package*.json ./
 
-COPY --chown=appuser:appuser package*.json ./
+RUN npm ci
 
-RUN npm install
+COPY public/ public/
 
-COPY --chown=appuser:appuser ./ ./
+COPY src/ src/
 
 RUN npm run build
 
 FROM nginx:1.23.3-alpine
 
-ENV PATH /frontend/node_modules/.bin:$PATH
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-RUN addgroup -S nginxuser && adduser -S -G nginxuser nginxuser
+COPY --from=build /frontend/build /usr/share/nginx/html
 
-RUN chown -R nginxuser:nginxuser /var/cache/nginx /var/run /var/log/nginx
+RUN chown -R nginx:nginx /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/conf.d
 
-COPY --chown=nginxuser:nginxuser nginx.conf /etc/nginx/nginx.conf
-
-WORKDIR /usr/share/nginx/html
-
-COPY --from=build --chown=nginxuser:nginxuser /frontend/build ./
-
-USER nginxuser
+USER nginx
 
 EXPOSE 80
 
-ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
+CMD [ "nginx", "-g", "daemon off;" ]
