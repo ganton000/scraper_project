@@ -9,12 +9,13 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     env_file:
-      - db.env
+      - ./backend/db.env
   backend:
     build:
       context: ./backend
+      dockerfile: Dockerfile
       args:
-        - ENVIRONMENT=tst
+        - ENVIRONMENT=dev
     ports:
       - '8000:8000'
     entrypoint: [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000" ]
@@ -22,7 +23,7 @@ services:
       - ./backend/:/pyroot/backend
       - data:/pyroot/backend/data
     env_file:
-      - ./env
+      - ./backend/.env
     depends_on:
       - database
   #backend-tests:
@@ -31,6 +32,7 @@ services:
   frontend:
     build:
       context: ./frontend
+      dockerfile: Dockerfile
     ports:
       - "3000:80"
     volumes:
