@@ -1,31 +1,38 @@
-from typing import Optional
+from datetime import datetime
 
-from pydantic import BaseModel, Field
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column
+)
+from sqlalchemy import (
+	Float,
+	String,
+	TIMESTAMP
+)
 
+from backend.models.base import Base
 
-class Symbol(BaseModel):
-	symbol: str
-	name: str
-	date_scraped: str
-	exchange: str = "NASDAQ"
-	price: float
-	market_cap: float = Field(
-		description="market cap in trillions (USD)"
-	)
-	pe_ratio: float
-	close_price: float
-	prev_close: float
-	position: str
-	close_diff: float
-	close_diff_percent: float
-	day_low: float
-	day_high: float
-	year_low: float
-	year_high: float
-	dividend_yield: Optional[float]
-	avg_volume: float = Field(
-		description="avg trading volume in millions"
-	)
+class Stocks(Base):
+	__tablename__ = "symbols"
 
-class MultipleSymbols(BaseModel):
-	symbols: list[Symbol]
+	symbol: Mapped[str] = mapped_column(String(5), primary_key=True)
+	name: Mapped[str] = mapped_column(String(20))
+	date_scraped: Mapped[str] = mapped_column(TIMESTAMP, default=datetime.utcnow)
+	exchange: Mapped[str] = mapped_column(String(10), default="NASDAQ")
+	price: Mapped[float] = mapped_column(Float(scale=2))
+	market_cap: Mapped[float] = mapped_column(Float(scale=2), repr="market cap in trillions (USD)")
+	pe_ratio: Mapped[float] = mapped_column(Float(scale=2))
+	close_price: Mapped[float] = mapped_column(Float(scale=2))
+	prev_close: Mapped[float] = mapped_column(Float(scale=2))
+	position: Mapped[str] = mapped_column(String(4))
+	close_diff: Mapped[float] = mapped_column(Float(scale=2))
+	close_diff_percent: Mapped[float] = mapped_column(Float(scale=2))
+	day_low: Mapped[float] = mapped_column(Float(scale=2))
+	day_high: Mapped[float] = mapped_column(Float(scale=2))
+	year_low: Mapped[float] = mapped_column(Float(scale=2))
+	year_high: Mapped[float] = mapped_column(Float(scale=2))
+	dividend_yield: Mapped[float] = mapped_column(Float(scale=2), nullable=True)
+	avg_volume: float = mapped_column(Float(scale=2), repr="avg trading volume in millions")
+
+	def __repr__(self) -> str:
+		return f"stock {self.name} with ticker {self.symbol} on {self.exchange} exchange"
