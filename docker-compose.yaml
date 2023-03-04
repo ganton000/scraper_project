@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   database:
@@ -24,6 +24,8 @@ services:
       - ./backend/.env
     depends_on:
       - database
+    networks:
+      - my-app
   #backend-tests:
   #  build: ./backend
   #  volumes: ./backend:/pyroot/backend
@@ -35,3 +37,12 @@ services:
       - "3000:80"
     volumes:
       - ./frontend/:/usr/share/nginx/html/
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+    networks:
+      - my-app
+
+networks:
+  my-app:
