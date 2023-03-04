@@ -1,6 +1,6 @@
 from time import perf_counter_ns
 
-from models.symbol import Symbol
+from schemas.symbol import Symbol
 from workers.GoogleWorker import GoogleFinanceWorker
 from utils.utils import get_console_logger
 

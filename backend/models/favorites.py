@@ -12,7 +12,7 @@ from sqlalchemy.orm import (
 )
 
 
-from backend.models.base import Base
+from models.base import Base
 
 class Favorites(Base):
 	__tablename__ = "favorites"

@@ -1,11 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from config import Settings
-from models.base import create_engine, Base
+from config import settings
+from models.base import Base
 
-
-settings = Settings()
 
 ## initialize env vars
 username= settings.DB_USERNAME

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from models.symbol import Symbol, MultipleSymbols
+from schemas.symbol import Symbol, MultipleSymbols
 from services.symbol_service import SymbolService
 from services.exceptions import NotFoundException
 from utils.utils import get_file_logger, get_console_logger
