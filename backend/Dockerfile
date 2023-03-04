@@ -1,5 +1,7 @@
 FROM python:3.10-alpine AS install
 
+ARG ENVIRONMENT
+
 ENV PYROOT /pyroot
 ENV PYTHONUSERBASE ${PYROOT}/backend/packages
 ENV PYTHONPATH ${PYROOT}/backend/:${PYTHONPATH}
@@ -11,8 +13,8 @@ COPY requirements.txt ${PYROOT}/backend/requirements.txt
 #    && pip install -r ${PYROOT}requirements.txt \
 #    && apk del .build-deps
 
-
-RUN pip install --user -r ${PYROOT}/backend/requirements.txt
+RUN if [ "${ENVIRONMENT}" == "tst" ]; then pip install --user -r -e .[tst]; \
+	else pip install --user -r ${PYROOT}/backend/requirements.txt --no-deps; fi
 
 FROM python:3.10-alpine
 

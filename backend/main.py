@@ -12,7 +12,7 @@ log_level = "INFO"
 
 
 
-origins = ["http://localhost", "http://localhost:3000"] ## react dev
+origins = ["http://localhost", "http://localhost:3000", "http://172.17.0.3", "http://172.17.0.3:3000"] ## react dev
 
 
 def create_app(origins: list[str]) -> FastAPI:

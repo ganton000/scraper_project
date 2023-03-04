@@ -4,3 +4,4 @@
 venv/
 commands.txt
 *.mypy*
+**/*.txt

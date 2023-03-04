@@ -2,17 +2,27 @@ version: "3"
 
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        - ENVIRONMENT=dev
     ports:
       - '8000:8000'
+    entrypoint: [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000" ]
     volumes:
       - ./backend/:/pyroot/backend/
     env_file:
       - ./env
     #depends_on:
     #  - database
+  #backend-tests:
+  #  build: ./backend
+  #  volumes: ./backend:/pyroot/backend/
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        - ENVIRONMENT=tst #build args
     ports:
       - "3000:80"
     volumes:

@@ -6,17 +6,23 @@ COPY package*.json ./
 
 RUN npm ci
 
-COPY . .
+COPY public/ public/
+
+COPY src/ src/
 
 RUN npm run build
 
 FROM nginx:1.23.3-alpine
 
-WORKDIR /usr/share/nginx/html
-
 COPY nginx.conf /etc/nginx/nginx.conf
 
-COPY --from=build /frontend/build ./
+COPY --from=build /frontend/build /usr/share/nginx/html
+
+RUN touch /var/run/nginx.pid
+
+RUN chown -R nginx:nginx /var/run/nginx.pid /usr/share/nginx/html /var/cache/nginx /var/log/nginx /etc/nginx/
+
+USER nginx
 
 EXPOSE 80
 

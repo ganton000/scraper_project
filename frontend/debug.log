@@ -1,0 +1,6 @@
+2023/03/03 05:19:09 [warn] 1#1: the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:1
+nginx: [warn] the "user" directive makes sense only if the master process runs with super-user privileges, ignored in /etc/nginx/nginx.conf:1
+2023/03/03 05:19:52 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.17.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8000/", host: "localhost:3000"
+2023/03/03 05:19:54 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.17.0.1, server: localhost, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8000/", host: "localhost:3000"
+2023/03/03 05:19:58 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.17.0.1, server: localhost, request: "GET /symbol/all HTTP/1.1", upstream: "http://127.0.0.1:8000/symbol/all", host: "localhost:3000"
+2023/03/03 05:19:58 [error] 30#30: *1 connect() failed (111: Connection refused) while connecting to upstream, client: 172.17.0.1, server: localhost, request: "GET /symbol/all HTTP/1.1", upstream: "http://127.0.0.1:8000/symbol/all", host: "localhost:3000"
