@@ -4,5 +4,7 @@
 venv/
 commands.txt
 *.mypy*
-**/*.txt
 **/*.egg-info
+*.txt
+!requirements.txt
+**/data/
