@@ -7,13 +7,16 @@ from sqlalchemy.orm import (
 from sqlalchemy import (
 	Float,
 	String,
-	TIMESTAMP
+	TIMESTAMP,
+	UniqueConstraint
 )
 
 from backend.models.base import Base
 
 class Stocks(Base):
-	__tablename__ = "symbols"
+	__tablename__ = "stocks"
+
+	__table_args__ = (UniqueConstraint("name", name="name"),)
 
 	symbol: Mapped[str] = mapped_column(String(5), primary_key=True)
 	name: Mapped[str] = mapped_column(String(20))

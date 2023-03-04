@@ -1,18 +1,17 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, PlainTextResponse
-import uvicorn
-
 
 from routes.stocks import create_stock_router
+from database import create_tables, get_db
+
 
 # initialize logger
 log_level = "INFO"
 
 
-
-
-origins = ["http://localhost", "http://localhost:3000", "http://172.17.0.3", "http://172.17.0.3:3000"] ## react dev
+origins = ["http://localhost", "http://localhost:3000", "http://scraper_api-frontend:3000"] ## react dev
 
 
 def create_app(origins: list[str]) -> FastAPI:
@@ -34,9 +33,13 @@ def create_app(origins: list[str]) -> FastAPI:
 
 app = create_app(origins)
 
+### creates postgres tables
+create_tables()
+
 @app.get("/")
 def home() -> dict:
     return {"message": "Hello World"}
+
 
 if __name__ == "__main__":
     pass
