@@ -29,7 +29,7 @@ WORKDIR ${PYROOT}/backend
 
 COPY --chown=backenduser:myapp --from=install ${PYROOT}/ ${PYROOT}/
 
-COPY --chown=backenduser:myapp . ./
+COPY --chown=backenduser:myapp . .
 
 USER backenduser
 

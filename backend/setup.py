@@ -1,16 +1,16 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='Scraper API',
     version='1.0',
     description='Google Finance Scraper and Web Server',
-    packages=['backend'],
+    packages=find_packages(),
     install_requires=[
         'requests',
         'beautifulsoup4',
     ],
     extras_require={
-        'dev': [
+        'tst': [
             'pytest',
             'mypy',
             'coverage',
