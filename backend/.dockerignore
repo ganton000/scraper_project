@@ -6,4 +6,3 @@ commands.txt
 *.egg-info
 *.txt
 !requirements.txt
-venv/

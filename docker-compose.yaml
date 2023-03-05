@@ -1,9 +1,9 @@
 version: "3.8"
 
 services:
-  database:
+  postgresdb:
     image: postgres:15.2-alpine
-    container_name: 'postgres'
+    container_name: 'postgresdb'
     ports:
       - '5433:5432'
     volumes:
@@ -20,10 +20,11 @@ services:
     volumes:
       - ./backend/:/pyroot/backend
       - ./backend/data:/pyroot/backend/data
+      - ./backend/models:/pyroot/backend/models
     env_file:
       - ./backend/.env
     depends_on:
-      - database
+      - postgresdb
     networks:
       - my-app
   #backend-tests:
@@ -40,7 +41,7 @@ services:
     stdin_open: true
     tty: true
     depends_on:
-      - backend
+      - postgresdb
     networks:
       - my-app
 
