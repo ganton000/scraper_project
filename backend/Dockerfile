@@ -20,6 +20,11 @@ RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 FROM tiangolo/uvicorn-gunicorn:python3.11
 
+ENV APP_MODULE main:app
+ENV PORT 80008000
+ENV HOST 0.0.0.0
+ENV LOG_LEVEL debug
+
 #RUN addgroup -S myapp && adduser -S -G myapp --system backenduser
 
 COPY --from=install /app /app
@@ -28,4 +33,4 @@ COPY . /app
 
 EXPOSE 8000
 
-CMD [ "uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "8000" ]
+ENTRYPOINT [ "/usr/local/bin/python3", "-m", "main.py" ]

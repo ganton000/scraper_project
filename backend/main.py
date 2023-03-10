@@ -43,10 +43,10 @@ create_tables()
 
 
 if __name__ == "__main__":
-    create_tables()
-    with get_db() as db:
-        result = db.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
-        print([row[0] for row in result])
-    #uvicorn.run(app, host="localhost", port=8000)
+    #create_tables()
+    #with get_db() as db:
+    #    result = db.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
+    #    print([row[0] for row in result])
+    uvicorn.run(app, host="localhost", port=8000)
 
 
