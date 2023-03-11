@@ -8,3 +8,5 @@ commands.txt
 *.txt
 !requirements.txt
 **/data/
+**/*.terraform
+**/*.hcl
