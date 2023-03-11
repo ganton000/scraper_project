@@ -1,7 +1,19 @@
+## local variable
+locals {
+	azs = data.aws_availability_zones.available.names
+}
+
+## data source
+data "aws_availability_zones" "available" {}
+
+# generate uuid of length 3
+resource "random_id" "random" {
+	byte_length = 2
+}
 
 resource "aws_vpc" "scraper-vpc" {
 	cidr_block = "172.31.0.0/16"
-	enable_dns_hostnames = false # default
+	enable_dns_hostnames = true # default is false
 	enable_dns_support = true # default
 
 	tags = {
@@ -23,7 +35,7 @@ resource "aws_subnet" "scraper-private-subnet" {
 resource "aws_subnet" "scraper-public-subnet" {
 	vpc_id = aws_vpc.scraper-vpc.id
 	cidr_block = "172.31.2.0/24"
-	map_public_ip_on_launch = false # default
+	map_public_ip_on_launch = true # default
 
 
 	tags = {
@@ -40,7 +52,7 @@ resource "aws_internet_gateway" "scraper-igw" {
 	}
 }
 
-resource "aws_route_table" "scraper-route-table" {
+resource "aws_route_table" "scraper-public-route-table" {
 	vpc_id = aws_vpc.scraper-vpc.id
 
 	route {

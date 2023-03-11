@@ -1,6 +1,6 @@
 terraform {
 	cloud {
-		organization = "scraper-api"
+		organization = "anton-terransible"
 
 		workspaces {
 			name = "scraper-api"
