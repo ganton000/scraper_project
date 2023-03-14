@@ -89,6 +89,8 @@ class GoogleFinanceQueueScheduler(Thread):
 			finance_worker = GoogleFinanceWorker(ticker_symbol)
 			stock_dict = asyncio.create_task(finance_worker.process_data())
 
+			# more stuff
+
 			self._output_queue.put(await stock_dict)
 
 
