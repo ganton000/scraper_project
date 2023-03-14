@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend/
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - 8000:8000
     environment:
@@ -10,27 +12,37 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
-      - DB_HOST=postgresdb
+      - DB_HOST=mysqldb
     volumes:
-      - ./backend:/backend:ro
+      - ./backend/data:/var/lib/postgresql/data:ro
     depends_on:
-      - postgresdb
+      - mysqldb
 
-  postgresdb:
-    container_name: postgres_db
-    image: postgres
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:latest
     restart: always
     ports:
-      - 5432:5432
+      - 3307:3307
     environment:
-      - POSTGRES_USR=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
 
   frontend:
-    build: ./frontend/
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - "3000:80"
     volumes:
-      - ./frontend:/frontend:ro
+      - ./frontend/:/usr/share/nginx/html:ro
+    stdin_open: true
+    tty: true
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8081
 

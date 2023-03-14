@@ -10,3 +10,4 @@ commands.txt
 **/data/
 **/*.terraform
 **/*.hcl
+**/*.log
