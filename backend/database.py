@@ -1,7 +1,6 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+import mysql.connector
 
-#from config import settings
+from config import settings
 from models.base import Base
 
 
@@ -12,20 +11,17 @@ host = settings.DB_HOST
 port = settings.DB_PORT
 database_name = settings.DB_NAME
 
-SQLALCHEMY_DATABASE_URL = f'postgresql://{username}:{password}@{host}:{port}/{database_name}'
+SQL_DATABASE_PARAMS = {
+	"host": host,
+	"user": username,
+	"password": password,
+	"database": database_name,
+	"port": port
+}
 
-
-'''
-The Engine is a factory that can create new database connections for us, which also holds onto connections inside of a Connection Pool for fast reuse.
-The echo=True parameter indicates that SQL emitted by connections will be logged to standard out.
-'''
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True)
-
-Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def create_tables():
-	Base.metadata.create_all(engine)
+	pass
 
 
 def get_db() -> Session:
